@@ -175,7 +175,7 @@ namespace Lab1
     {
         static void Main()
         {
-            Console.WriteLine("lets talk about");
+            Console.WriteLine("lets talk about anything");
         }
     }
 }
