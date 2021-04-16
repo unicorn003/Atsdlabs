@@ -193,7 +193,7 @@ namespace Lab1
             printTree_preorder_recursive(node.right);
         }
 
-        void printTree_preorder() {
+        public void printTree_preorder() {
             printTree_preorder_recursive(this.root);
             Console.Write("\n");
         }
@@ -222,6 +222,25 @@ namespace Lab1
         void printTree_postorder() {
             printTree_postorder_recursive(this.root);
             Console.Write("\n");
+        }
+        
+        public int getParent(int value) {
+            Node current = root;
+            if (current == null || (int) current.data == value) {
+                return -10000;
+            }
+
+            while (true) {
+                if (current.left == null && current.right == null)
+                    return -10000;
+                if (current.left != null && (int) current.left.data == value ||
+                    current.right != null && (int) current.right.data == value)
+                    return (int) current.data;
+
+                if ((int) current.data > value)
+                    current = current.left;
+                else current = current.right;
+            }
         }
         
         public static BalancedBinarySearchTree fromArray(params int[] arr) {
