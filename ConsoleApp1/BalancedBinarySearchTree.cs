@@ -122,5 +122,51 @@ namespace Lab1
             }
             return z;
         }
+        
+        private int findSmallestValue(Node node)  {
+            return node.left == null ? node.data : findSmallestValue(node.left);
+        }
+        
+        /**
+     * Find node to delete, then delete it
+     */
+        private Node recursiveDelete(Node current, int item) {
+            if (current == null) return null;
+
+            // Node to delete found
+            if (item == current.data) {
+                // Node is a leaf
+                if (current.left == null && current.right == null) {
+                    return null;
+                }
+
+                // Node has only right child
+                if (current.left == null) {
+                    return current.right;
+                }
+
+                // Node has only left child
+                if (current.right == null) {
+                    return current.left;
+                }
+
+                // Node has both left and right children
+                int smallestValue = findSmallestValue(current.right);
+                current.data = smallestValue;
+                current.right = recursiveDelete(current.right, smallestValue);
+                return current;
+            }
+
+            if (item < current.data) {
+                current.left = recursiveDelete(current.left, item);
+                return current;
+            }
+            current.right = recursiveDelete(current.right, item);
+            return current;
+        }
+
+        void deleteItem(int item) {
+            root = recursiveDelete(root, item);
+        }
     }
 }
