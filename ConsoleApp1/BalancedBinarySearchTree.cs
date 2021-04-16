@@ -184,5 +184,44 @@ namespace Lab1
         bool search(int item) {
             return recursiveSearch(root, item);
         }
+        
+        private void printTree_preorder_recursive(Node node) {
+            if(node == null) return;
+
+            Console.Write(node.data + " ");
+            printTree_preorder_recursive(node.left);
+            printTree_preorder_recursive(node.right);
+        }
+
+        void printTree_preorder() {
+            printTree_preorder_recursive(this.root);
+            Console.Write("\n");
+        }
+
+        private void printTree_inorder_recursive(Node node) {
+            if(node == null) return;
+
+            printTree_inorder_recursive(node.left);
+            Console.Write(node.data + " ");
+            printTree_inorder_recursive(node.right);
+        }
+
+        void printTree_inorder() {
+            printTree_inorder_recursive(this.root);
+            Console.Write("\n");
+        }
+
+        private void printTree_postorder_recursive(Node node) {
+            if(node == null) return;
+
+            printTree_postorder_recursive(node.left);
+            printTree_postorder_recursive(node.right);
+            Console.Write(node.data + " ");
+        }
+
+        void printTree_postorder() {
+            printTree_postorder_recursive(this.root);
+            Console.Write("\n");
+        }
     }
 }
