@@ -223,5 +223,15 @@ namespace Lab1
             printTree_postorder_recursive(this.root);
             Console.Write("\n");
         }
+        
+        public static BalancedBinarySearchTree fromArray(params int[] arr) {
+            BalancedBinarySearchTree tree = new BalancedBinarySearchTree();
+
+            foreach(int i in arr) {
+                tree.addItem(i);
+            }
+
+            return tree;
+        }
     }
 }
