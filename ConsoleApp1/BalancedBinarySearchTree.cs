@@ -168,5 +168,21 @@ namespace Lab1
         void deleteItem(int item) {
             root = recursiveDelete(root, item);
         }
+        
+        private bool recursiveSearch(Node current, int item) {
+            if(current == null) {
+                return false;
+            }
+            if (item == current.data) {
+                return true;
+            }
+            return item < current.data
+                ? recursiveSearch(current.left, item)
+                : recursiveSearch(current.right, item);
+        }
+
+        bool search(int item) {
+            return recursiveSearch(root, item);
+        }
     }
 }
