@@ -22,14 +22,14 @@ namespace Lab1
         Node<T> tail; //last element
         int count;      // size of list
 
-        public LinkedList() //make a list with a constructor
+        public LinkedList() //make a list with a constructor 
         {
             count = 0;
             head = null;
             tail = null;
         }
 
-        public bool IsEmpty() //metod for cheking empty last
+        public bool IsEmpty() //method for checking empty last
         {
             bool fl = false;
             if (count == 0)
