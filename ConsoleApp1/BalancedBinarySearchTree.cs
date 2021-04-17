@@ -252,5 +252,53 @@ namespace Lab1
 
             return tree;
         }
+        
+        public static void Main()
+        {
+            BalancedBinarySearchTree t = new BalancedBinarySearchTree();
+            Console.WriteLine("isEmpty()");
+            Console.WriteLine(t.isEmpty());
+            t.addItem(8);
+            t.addItem(3);
+            t.addItem(10);
+            t.addItem(1);
+            t.addItem(6);
+            t.addItem(14);
+            t.addItem(4);
+            t.addItem(7);
+            t.addItem(13);
+            Console.WriteLine(t.isEmpty());
+            
+            Console.WriteLine();
+
+            Console.WriteLine("Preorder");
+            t.printTree_preorder();
+            Console.WriteLine("Inorder");
+            t.printTree_inorder();
+            Console.WriteLine("Postorder");
+            t.printTree_postorder();
+            
+            Console.WriteLine();
+            
+            Console.WriteLine("Search 3:");
+            Console.WriteLine(t.search(3));
+            Console.WriteLine("Search 18:");
+            Console.WriteLine(t.search(18));
+            
+            Console.WriteLine();
+            
+            Console.WriteLine("delete 13");
+            t.deleteItem(13);
+            t.printTree_inorder();
+
+            Console.WriteLine();
+            
+            Console.WriteLine("getParent(8)");
+            Console.WriteLine(t.getParent(8));
+            Console.WriteLine("getParent(14)");
+            Console.WriteLine(t.getParent(14));
+            Console.WriteLine("getParent(666)");
+            Console.WriteLine(t.getParent(666));
+        }
     }
 }
