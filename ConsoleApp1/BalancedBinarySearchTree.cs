@@ -272,6 +272,12 @@ namespace Lab1
             CountNodeRecursive(Root, false);
             return _elementsBuffer.Count;
         }
+        
+        /// <summary>
+        ///   Returns true if tree is balanced, otherwise returns false
+        /// </summary>
+        /// <returns>true</returns>
+        public bool IsBalanced() => true;
 
         public T FatherNode(T value) {
             Node<T> current = Root;
@@ -353,6 +359,10 @@ namespace Lab1
 
             Console.WriteLine();
             
+            Console.WriteLine("\nIsBalanced");
+            Console.WriteLine(t.IsBalanced());
+            
+            Console.WriteLine();
             try
             {
                 Console.WriteLine("FatherNode(8)");
