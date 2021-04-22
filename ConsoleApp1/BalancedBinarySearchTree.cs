@@ -5,10 +5,10 @@ namespace Lab1
 {
     public class BalancedBinarySearchTree<T> where T : IComparable<T>
     {
-        private Node<T> _root;
-        private List<T> _elementsBuffer;
+        protected Node<T> Root;
+        protected List<T> _elementsBuffer;
 
-        class Node<TS>
+        public class Node<TS>
         {
             public TS Data;
             public int Height;
@@ -22,7 +22,7 @@ namespace Lab1
 
         public bool IsEmpty()
         {
-            return _root == null;
+            return Root == null;
         }
 
         public bool IsFull()
@@ -39,7 +39,7 @@ namespace Lab1
 
         int Size()
         {
-            return recursiveSize(_root);
+            return recursiveSize(Root);
         }
 
 
@@ -69,10 +69,10 @@ namespace Lab1
         public void AddItem(T item)
         {
             // Normal insert
-            _root = recursiveAdd(_root, item);
+            Root = recursiveAdd(Root, item);
             
             // Balancing
-            _root = Rebalance(_root);
+            Root = Rebalance(Root);
         }
         private int Height(Node<T> node)
         {
@@ -167,7 +167,7 @@ namespace Lab1
         }
 
         public void DeleteItem(T item) {
-            _root = RecursiveDelete(_root, item);
+            Root = RecursiveDelete(Root, item);
         }
         
         private bool RecursiveSearch(Node<T> current, int item) {
@@ -183,7 +183,7 @@ namespace Lab1
         }
 
         public bool Search(int item) {
-            return RecursiveSearch(_root, item);
+            return RecursiveSearch(Root, item);
         }
         
         private void PrintTreePreorderRecursive(Node<T> node) {
@@ -195,7 +195,7 @@ namespace Lab1
         }
 
         public void PrintTreePreorder() {
-            PrintTreePreorderRecursive(this._root);
+            PrintTreePreorderRecursive(this.Root);
             Console.Write("\n");
         }
 
@@ -208,7 +208,7 @@ namespace Lab1
         }
 
         public void PrintTreeInorder() {
-            PrintTreeInorderRecursive(this._root);
+            PrintTreeInorderRecursive(this.Root);
             Console.Write("\n");
         }
 
@@ -221,7 +221,7 @@ namespace Lab1
         }
 
         public void PrintTreePostorder() {
-            PrintTreePostorderRecursive(this._root);
+            PrintTreePostorderRecursive(this.Root);
             Console.Write("\n");
         }
 
@@ -239,7 +239,7 @@ namespace Lab1
         public void PrintSorted()
         {
             _elementsBuffer.Clear();
-            FillElementsBuffer(_root);
+            FillElementsBuffer(Root);
             
             // Array.Sort(_elementsBuffer);
             _elementsBuffer.Sort();
@@ -269,12 +269,12 @@ namespace Lab1
         public int CountNode()
         {
             _elementsBuffer.Clear();
-            CountNodeRecursive(_root, false);
+            CountNodeRecursive(Root, false);
             return _elementsBuffer.Count;
         }
-        
+
         public T FatherNode(T value) {
-            Node<T> current = _root;
+            Node<T> current = Root;
             if (current == null || current.Data.Equals(value)) {
                 throw new Exception("-10000");
             }
@@ -370,6 +370,47 @@ namespace Lab1
             
             Console.WriteLine("\nCountNode");
             Console.WriteLine(t.CountNode());
+            
+            Console.WriteLine("\nSumKeys");
+            DoubleBalancedBinarySearchTree db = DoubleBalancedBinarySearchTree.FromArray(8, 3, 10, 1, 6, 14, 4, 7, 13);
+            Console.WriteLine(db.SumKeys());
+        }
+    }
+    
+    
+    public class DoubleBalancedBinarySearchTree : BalancedBinarySearchTree<double>
+    {
+        private void SumKeysRecursive(Node<double> node, bool isRight)
+        {
+            if (node == null) return;
+            if (isRight) _elementsBuffer.Add(node.Data);
+            
+            SumKeysRecursive(node.Left, false);
+            SumKeysRecursive(node.Right, true);
+        }
+        
+        /// <returns>Sum of keys in right son nodes in a BBST.</returns>
+        public double SumKeys()
+        {
+            _elementsBuffer.Clear();
+            SumKeysRecursive(Root, false);
+            
+            double sum = 0;
+            foreach (double d in _elementsBuffer)
+            {
+                sum += d;
+            }
+            return sum;
+        }
+        
+        public static DoubleBalancedBinarySearchTree FromArray(params double[] arr) {
+            DoubleBalancedBinarySearchTree tree = new DoubleBalancedBinarySearchTree();
+
+            foreach(double d in arr) {
+                tree.AddItem(d);
+            }
+
+            return tree;
         }
     }
 }
