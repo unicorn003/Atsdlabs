@@ -5,40 +5,40 @@ namespace Lab1
 {
     public class BalancedBinarySearchTree
     {
-        private Node root;
+        private Node _root;
 
         class Node
         {
-            public int data;
-            public int height;
-            public Node left, right;
+            public int Data;
+            public int Height;
+            public Node Left, Right;
 
             public Node(int d)
             {
-                data = d;
+                Data = d;
             }
         }
 
-        bool isEmpty()
+        bool IsEmpty()
         {
-            return root == null;
+            return _root == null;
         }
 
-        bool isFull()
+        bool IsFull()
         {
-            return !isEmpty();
+            return !IsEmpty();
         }
 
         private int recursiveSize(Node current)
         {
             if (current == null) return 0;
 
-            return 1 + recursiveSize(current.left) + recursiveSize(current.right);
+            return 1 + recursiveSize(current.Left) + recursiveSize(current.Right);
         }
 
-        int size()
+        int Size()
         {
-            return recursiveSize(root);
+            return recursiveSize(_root);
         }
 
 
@@ -49,12 +49,12 @@ namespace Lab1
                 return new Node(item);
             }
 
-            if (item < current.data)
+            if (item < current.Data)
             {
-                current.left = recursiveAdd(current.left, item);
-            } else if (item > current.data)
+                current.Left = recursiveAdd(current.Left, item);
+            } else if (item > current.Data)
             {
-                current.right = recursiveAdd(current.right, item);
+                current.Right = recursiveAdd(current.Right, item);
             }
             else
             {
@@ -65,189 +65,189 @@ namespace Lab1
             return current;
         }
 
-        void addItem(int item)
+        void AddItem(int item)
         {
             // Normal insert
-            root = recursiveAdd(root, item);
+            _root = recursiveAdd(_root, item);
             
             // Balancing
-            root = rebalance(root);
+            _root = Rebalance(_root);
         }
         
-        private int height(Node node) {
-            return node == null ? -1 : node.height;
+        private int Height(Node node) {
+            return node == null ? -1 : node.Height;
+        }
+
+        private void UpdateHeight(Node current) {
+            current.Height = 1 + Math.Max(Height(current.Left), Height(current.Right));
         }
         
-        private void updateHeight(Node current) {
-            current.height = 1 + Math.Max(height(current.left), height(current.right));
+        private int GetBalance(Node node) {
+            return node == null ? 0 : Height(node.Right) - Height(node.Left);
         }
         
-        private int getBalance(Node node) {
-            return node == null ? 0 : height(node.right) - height(node.left);
-        }
-        
-        private Node rotateLeft(Node y) {
-            Node x = y.right;
-            Node z = x.left;
-            x.left = y;
-            y.right = z;
-            updateHeight(y);
-            updateHeight(x);
+        private Node RotateLeft(Node y) {
+            Node x = y.Right;
+            Node z = x.Left;
+            x.Left = y;
+            y.Right = z;
+            UpdateHeight(y);
+            UpdateHeight(x);
             return x;
         }
 
-        private Node rotateRight(Node y) {
-            Node x = y.left;
-            Node z = x.left;
-            x.right = y;
-            y.left = z;
-            updateHeight(y);
-            updateHeight(x);
+        private Node RotateRight(Node y) {
+            Node x = y.Left;
+            Node z = x.Left;
+            x.Right = y;
+            y.Left = z;
+            UpdateHeight(y);
+            UpdateHeight(x);
             return x;
         }
 
-        private Node rebalance(Node z) {
-            updateHeight(z);
-            int balance = getBalance(z);
+        private Node Rebalance(Node z) {
+            UpdateHeight(z);
+            int balance = GetBalance(z);
             if (balance > 1) {
-                if (height(z.right.right) <= height(z.right.left)) {
-                    z.right = rotateRight(z.right);
+                if (Height(z.Right.Right) <= Height(z.Right.Left)) {
+                    z.Right = RotateRight(z.Right);
                 }
-                z = rotateLeft(z);
+                z = RotateLeft(z);
             } else if (balance < -1) {
-                if (height(z.left.left) < height(z.left.right)) {
-                    z.left = rotateLeft(z.left);
+                if (Height(z.Left.Left) < Height(z.Left.Right)) {
+                    z.Left = RotateLeft(z.Left);
                 }
-                z = rotateRight(z);
+                z = RotateRight(z);
             }
             return z;
         }
         
-        private int findSmallestValue(Node node)  {
-            return node.left == null ? node.data : findSmallestValue(node.left);
+        private int FindSmallestValue(Node node)  {
+            return node.Left == null ? node.Data : FindSmallestValue(node.Left);
         }
         
         /**
      * Find node to delete, then delete it
      */
-        private Node recursiveDelete(Node current, int item) {
+        private Node RecursiveDelete(Node current, int item) {
             if (current == null) return null;
 
             // Node to delete found
-            if (item == current.data) {
+            if (item == current.Data) {
                 // Node is a leaf
-                if (current.left == null && current.right == null) {
+                if (current.Left == null && current.Right == null) {
                     return null;
                 }
 
                 // Node has only right child
-                if (current.left == null) {
-                    return current.right;
+                if (current.Left == null) {
+                    return current.Right;
                 }
 
                 // Node has only left child
-                if (current.right == null) {
-                    return current.left;
+                if (current.Right == null) {
+                    return current.Left;
                 }
 
                 // Node has both left and right children
-                int smallestValue = findSmallestValue(current.right);
-                current.data = smallestValue;
-                current.right = recursiveDelete(current.right, smallestValue);
+                int smallestValue = FindSmallestValue(current.Right);
+                current.Data = smallestValue;
+                current.Right = RecursiveDelete(current.Right, smallestValue);
                 return current;
             }
 
-            if (item < current.data) {
-                current.left = recursiveDelete(current.left, item);
+            if (item < current.Data) {
+                current.Left = RecursiveDelete(current.Left, item);
                 return current;
             }
-            current.right = recursiveDelete(current.right, item);
+            current.Right = RecursiveDelete(current.Right, item);
             return current;
         }
 
-        void deleteItem(int item) {
-            root = recursiveDelete(root, item);
+        void DeleteItem(int item) {
+            _root = RecursiveDelete(_root, item);
         }
         
-        private bool recursiveSearch(Node current, int item) {
+        private bool RecursiveSearch(Node current, int item) {
             if(current == null) {
                 return false;
             }
-            if (item == current.data) {
+            if (item == current.Data) {
                 return true;
             }
-            return item < current.data
-                ? recursiveSearch(current.left, item)
-                : recursiveSearch(current.right, item);
+            return item < current.Data
+                ? RecursiveSearch(current.Left, item)
+                : RecursiveSearch(current.Right, item);
         }
 
-        bool search(int item) {
-            return recursiveSearch(root, item);
-        }
-        
-        private void printTree_preorder_recursive(Node node) {
-            if(node == null) return;
-
-            Console.Write(node.data + " ");
-            printTree_preorder_recursive(node.left);
-            printTree_preorder_recursive(node.right);
-        }
-
-        public void printTree_preorder() {
-            printTree_preorder_recursive(this.root);
-            Console.Write("\n");
-        }
-
-        private void printTree_inorder_recursive(Node node) {
-            if(node == null) return;
-
-            printTree_inorder_recursive(node.left);
-            Console.Write(node.data + " ");
-            printTree_inorder_recursive(node.right);
-        }
-
-        void printTree_inorder() {
-            printTree_inorder_recursive(this.root);
-            Console.Write("\n");
-        }
-
-        private void printTree_postorder_recursive(Node node) {
-            if(node == null) return;
-
-            printTree_postorder_recursive(node.left);
-            printTree_postorder_recursive(node.right);
-            Console.Write(node.data + " ");
-        }
-
-        void printTree_postorder() {
-            printTree_postorder_recursive(this.root);
-            Console.Write("\n");
+        bool Search(int item) {
+            return RecursiveSearch(_root, item);
         }
         
-        public int getParent(int value) {
-            Node current = root;
-            if (current == null || (int) current.data == value) {
+        private void PrintTreePreorderRecursive(Node node) {
+            if(node == null) return;
+
+            Console.Write(node.Data + " ");
+            PrintTreePreorderRecursive(node.Left);
+            PrintTreePreorderRecursive(node.Right);
+        }
+
+        public void PrintTreePreorder() {
+            PrintTreePreorderRecursive(this._root);
+            Console.Write("\n");
+        }
+
+        private void PrintTreeInorderRecursive(Node node) {
+            if(node == null) return;
+
+            PrintTreeInorderRecursive(node.Left);
+            Console.Write(node.Data + " ");
+            PrintTreeInorderRecursive(node.Right);
+        }
+
+        void PrintTreeInorder() {
+            PrintTreeInorderRecursive(this._root);
+            Console.Write("\n");
+        }
+
+        private void PrintTreePostorderRecursive(Node node) {
+            if(node == null) return;
+
+            PrintTreePostorderRecursive(node.Left);
+            PrintTreePostorderRecursive(node.Right);
+            Console.Write(node.Data + " ");
+        }
+
+        void PrintTreePostorder() {
+            PrintTreePostorderRecursive(this._root);
+            Console.Write("\n");
+        }
+        
+        public int GetParent(int value) {
+            Node current = _root;
+            if (current == null || (int) current.Data == value) {
                 return -10000;
             }
 
             while (true) {
-                if (current.left == null && current.right == null)
+                if (current.Left == null && current.Right == null)
                     return -10000;
-                if (current.left != null && (int) current.left.data == value ||
-                    current.right != null && (int) current.right.data == value)
-                    return (int) current.data;
+                if (current.Left != null && (int) current.Left.Data == value ||
+                    current.Right != null && (int) current.Right.Data == value)
+                    return (int) current.Data;
 
-                if ((int) current.data > value)
-                    current = current.left;
-                else current = current.right;
+                if ((int) current.Data > value)
+                    current = current.Left;
+                else current = current.Right;
             }
         }
         
-        public static BalancedBinarySearchTree fromArray(params int[] arr) {
+        public static BalancedBinarySearchTree FromArray(params int[] arr) {
             BalancedBinarySearchTree tree = new BalancedBinarySearchTree();
 
             foreach(int i in arr) {
-                tree.addItem(i);
+                tree.AddItem(i);
             }
 
             return tree;
@@ -257,48 +257,48 @@ namespace Lab1
         {
             BalancedBinarySearchTree t = new BalancedBinarySearchTree();
             Console.WriteLine("isEmpty()");
-            Console.WriteLine(t.isEmpty());
-            t.addItem(8);
-            t.addItem(3);
-            t.addItem(10);
-            t.addItem(1);
-            t.addItem(6);
-            t.addItem(14);
-            t.addItem(4);
-            t.addItem(7);
-            t.addItem(13);
-            Console.WriteLine(t.isEmpty());
+            Console.WriteLine(t.IsEmpty());
+            t.AddItem(8);
+            t.AddItem(3);
+            t.AddItem(10);
+            t.AddItem(1);
+            t.AddItem(6);
+            t.AddItem(14);
+            t.AddItem(4);
+            t.AddItem(7);
+            t.AddItem(13);
+            Console.WriteLine(t.IsEmpty());
             
             Console.WriteLine();
 
             Console.WriteLine("Preorder");
-            t.printTree_preorder();
+            t.PrintTreePreorder();
             Console.WriteLine("Inorder");
-            t.printTree_inorder();
+            t.PrintTreeInorder();
             Console.WriteLine("Postorder");
-            t.printTree_postorder();
+            t.PrintTreePostorder();
             
             Console.WriteLine();
             
             Console.WriteLine("Search 3:");
-            Console.WriteLine(t.search(3));
+            Console.WriteLine(t.Search(3));
             Console.WriteLine("Search 18:");
-            Console.WriteLine(t.search(18));
+            Console.WriteLine(t.Search(18));
             
             Console.WriteLine();
             
             Console.WriteLine("delete 13");
-            t.deleteItem(13);
-            t.printTree_inorder();
+            t.DeleteItem(13);
+            t.PrintTreeInorder();
 
             Console.WriteLine();
             
             Console.WriteLine("getParent(8)");
-            Console.WriteLine(t.getParent(8));
+            Console.WriteLine(t.GetParent(8));
             Console.WriteLine("getParent(14)");
-            Console.WriteLine(t.getParent(14));
+            Console.WriteLine(t.GetParent(14));
             Console.WriteLine("getParent(666)");
-            Console.WriteLine(t.getParent(666));
+            Console.WriteLine(t.GetParent(666));
         }
     }
 }
