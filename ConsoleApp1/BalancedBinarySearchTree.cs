@@ -396,9 +396,14 @@ namespace Lab1
             DoubleBalancedBinarySearchTree db = DoubleBalancedBinarySearchTree.FromArray(8, 3, 10, 1, 6, 14, 4, 7, 13);
             Console.WriteLine(db.SumKeys());
             
+            Console.WriteLine("\nCopyBBST");
             BalancedBinarySearchTree<int> t3 = BalancedBinarySearchTree<int>.CopyBBST(t);
             t.PrintTreeInorder();
             t3.PrintTreeInorder();
+            
+            Console.WriteLine("\nDeleteEven");
+            db.DeleteEven();
+            db.PrintTreeInorder();
         }
     }
     
@@ -426,6 +431,22 @@ namespace Lab1
                 sum += d;
             }
             return sum;
+        }
+        
+        private void DeleteEvenRecursive(Node<double> n)
+        {
+            if (n == null) return;
+            DeleteEvenRecursive(n.Left);
+            DeleteEvenRecursive(n.Right);
+            if (n.Data % 2 == 0) DeleteItem(n.Data);
+        }
+
+        /// <summary>
+        /// Deletes all even keys from a BBST
+        /// </summary>
+        public void DeleteEven()
+        {
+            DeleteEvenRecursive(Root);
         }
         
         public static DoubleBalancedBinarySearchTree FromArray(params double[] arr) {
