@@ -238,7 +238,7 @@ namespace Lab1
         /// -  Sorted in descending order (second line )
         public void PrintSorted()
         {
-            _elementsBuffer = new List<T>();
+            _elementsBuffer.Clear();
             FillElementsBuffer(_root);
             
             // Array.Sort(_elementsBuffer);
@@ -254,6 +254,23 @@ namespace Lab1
                 Console.Write(_elementsBuffer[i] + " ");
             }
             Console.WriteLine();
+        }
+        
+        private void CountNodeRecursive(Node<T> node, bool isLeft)
+        {
+            if (node == null) return;
+            if (isLeft) _elementsBuffer.Add(node.Data);
+            
+            CountNodeRecursive(node.Left, true);
+            CountNodeRecursive(node.Right, false);
+        }
+       
+        /// <returns>Number of left son nodes in a BBST</returns>
+        public int CountNode()
+        {
+            _elementsBuffer.Clear();
+            CountNodeRecursive(_root, false);
+            return _elementsBuffer.Count;
         }
         
         public T FatherNode(T value) {
@@ -348,9 +365,11 @@ namespace Lab1
                 Console.WriteLine("-10000");
             }
         
-            Console.WriteLine();
-            
+            Console.WriteLine("\nPrintSorted");
             t.PrintSorted();
+            
+            Console.WriteLine("\nCountNode");
+            Console.WriteLine(t.CountNode());
         }
     }
 }
