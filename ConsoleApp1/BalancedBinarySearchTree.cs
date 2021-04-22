@@ -1,11 +1,12 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Lab1
 {
     public class BalancedBinarySearchTree<T> where T : IComparable<T>
     {
         private Node<T> _root;
+        private List<T> _elementsBuffer;
 
         class Node<TS>
         {
@@ -223,6 +224,37 @@ namespace Lab1
             PrintTreePostorderRecursive(this._root);
             Console.Write("\n");
         }
+
+        private void FillElementsBuffer(Node<T> node)
+        {
+            if(node == null) return;
+            _elementsBuffer.Add(node.Data);
+            FillElementsBuffer(node.Left);
+            FillElementsBuffer(node.Right);
+        }
+
+        /// It prints keys of a BBST in 2 lines:
+        /// -  Sorted in ascending order (first line)
+        /// -  Sorted in descending order (second line )
+        public void PrintSorted()
+        {
+            _elementsBuffer = new List<T>();
+            FillElementsBuffer(_root);
+            
+            // Array.Sort(_elementsBuffer);
+            _elementsBuffer.Sort();
+            foreach (T el in _elementsBuffer)
+            {
+                Console.Write(el + " ");
+            }
+            Console.WriteLine();
+
+            for (int i = _elementsBuffer.Count -1; i >= 0; i--)
+            {
+                Console.Write(_elementsBuffer[i] + " ");
+            }
+            Console.WriteLine();
+        }
         
         public T FatherNode(T value) {
             Node<T> current = _root;
@@ -315,6 +347,10 @@ namespace Lab1
             {
                 Console.WriteLine("-10000");
             }
+        
+            Console.WriteLine();
+            
+            t.PrintSorted();
         }
     }
 }
