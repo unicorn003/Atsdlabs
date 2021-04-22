@@ -292,6 +292,17 @@ namespace Lab1
             }
         }
         
+        /// <summary>
+        ///  It creates and returns a copy of a given BBST.
+        /// </summary>
+        /// <param name="treeToCopy"></param>
+        public static BalancedBinarySearchTree<T> CopyBBST(BalancedBinarySearchTree<T> treeToCopy)
+        {
+            BalancedBinarySearchTree<T> tree = new BalancedBinarySearchTree<T>();
+            tree.Root = treeToCopy.Root;
+            return tree;
+        }
+        
         public static BalancedBinarySearchTree<T> FromArray(params T[] arr) {
             BalancedBinarySearchTree<T> tree = new BalancedBinarySearchTree<T>();
 
@@ -374,6 +385,10 @@ namespace Lab1
             Console.WriteLine("\nSumKeys");
             DoubleBalancedBinarySearchTree db = DoubleBalancedBinarySearchTree.FromArray(8, 3, 10, 1, 6, 14, 4, 7, 13);
             Console.WriteLine(db.SumKeys());
+            
+            BalancedBinarySearchTree<int> t3 = BalancedBinarySearchTree<int>.CopyBBST(t);
+            t.PrintTreeInorder();
+            t3.PrintTreeInorder();
         }
     }
     
