@@ -3,33 +3,33 @@ using System.Collections;
 
 namespace Lab1
 {
-    public class BalancedBinarySearchTree
+    public class BalancedBinarySearchTree<T> where T : IComparable<T>
     {
-        private Node _root;
+        private Node<T> _root;
 
-        class Node
+        class Node<TS>
         {
-            public int Data;
+            public TS Data;
             public int Height;
-            public Node Left, Right;
+            public Node<TS> Left, Right;
 
-            public Node(int d)
+            public Node(TS d)
             {
                 Data = d;
             }
         }
 
-        bool IsEmpty()
+        public bool IsEmpty()
         {
             return _root == null;
         }
 
-        bool IsFull()
+        public bool IsFull()
         {
             return !IsEmpty();
         }
 
-        private int recursiveSize(Node current)
+        private int recursiveSize(Node<T> current)
         {
             if (current == null) return 0;
 
@@ -42,17 +42,17 @@ namespace Lab1
         }
 
 
-        private Node recursiveAdd(Node current, int item)
+        private Node<T> recursiveAdd(Node<T> current, T item)
         {
             if (current == null)
             {
-                return new Node(item);
+                return new Node<T>(item);
             }
 
-            if (item < current.Data)
+            if (item.CompareTo(current.Data) < 0)
             {
                 current.Left = recursiveAdd(current.Left, item);
-            } else if (item > current.Data)
+            } else if (item.CompareTo(current.Data) > 0)
             {
                 current.Right = recursiveAdd(current.Right, item);
             }
@@ -65,7 +65,7 @@ namespace Lab1
             return current;
         }
 
-        void AddItem(int item)
+        public void AddItem(T item)
         {
             // Normal insert
             _root = recursiveAdd(_root, item);
@@ -73,22 +73,22 @@ namespace Lab1
             // Balancing
             _root = Rebalance(_root);
         }
-        
-        private int Height(Node node) {
+        private int Height(Node<T> node)
+        {
             return node == null ? -1 : node.Height;
         }
 
-        private void UpdateHeight(Node current) {
+        private void UpdateHeight(Node<T> current) {
             current.Height = 1 + Math.Max(Height(current.Left), Height(current.Right));
         }
         
-        private int GetBalance(Node node) {
+        private int GetBalance(Node<T> node) {
             return node == null ? 0 : Height(node.Right) - Height(node.Left);
         }
         
-        private Node RotateLeft(Node y) {
-            Node x = y.Right;
-            Node z = x.Left;
+        private Node<T> RotateLeft(Node<T> y) {
+            Node<T> x = y.Right;
+            Node<T> z = x.Left;
             x.Left = y;
             y.Right = z;
             UpdateHeight(y);
@@ -96,9 +96,9 @@ namespace Lab1
             return x;
         }
 
-        private Node RotateRight(Node y) {
-            Node x = y.Left;
-            Node z = x.Left;
+        private Node<T> RotateRight(Node<T> y) {
+            Node<T> x = y.Left;
+            Node<T> z = x.Left;
             x.Right = y;
             y.Left = z;
             UpdateHeight(y);
@@ -106,7 +106,7 @@ namespace Lab1
             return x;
         }
 
-        private Node Rebalance(Node z) {
+        private Node<T> Rebalance(Node<T> z) {
             UpdateHeight(z);
             int balance = GetBalance(z);
             if (balance > 1) {
@@ -123,18 +123,18 @@ namespace Lab1
             return z;
         }
         
-        private int FindSmallestValue(Node node)  {
+        private T FindSmallestValue(Node<T> node)  {
             return node.Left == null ? node.Data : FindSmallestValue(node.Left);
         }
         
         /**
      * Find node to delete, then delete it
      */
-        private Node RecursiveDelete(Node current, int item) {
+        private Node<T> RecursiveDelete(Node<T> current, T item) {
             if (current == null) return null;
 
             // Node to delete found
-            if (item == current.Data) {
+            if (item.Equals(current.Data)) {
                 // Node is a leaf
                 if (current.Left == null && current.Right == null) {
                     return null;
@@ -151,13 +151,13 @@ namespace Lab1
                 }
 
                 // Node has both left and right children
-                int smallestValue = FindSmallestValue(current.Right);
+                T smallestValue = FindSmallestValue(current.Right);
                 current.Data = smallestValue;
                 current.Right = RecursiveDelete(current.Right, smallestValue);
                 return current;
             }
 
-            if (item < current.Data) {
+            if (item.CompareTo(current.Data) < 0) {
                 current.Left = RecursiveDelete(current.Left, item);
                 return current;
             }
@@ -165,27 +165,27 @@ namespace Lab1
             return current;
         }
 
-        void DeleteItem(int item) {
+        public void DeleteItem(T item) {
             _root = RecursiveDelete(_root, item);
         }
         
-        private bool RecursiveSearch(Node current, int item) {
+        private bool RecursiveSearch(Node<T> current, int item) {
             if(current == null) {
                 return false;
             }
-            if (item == current.Data) {
+            if (item.Equals(current.Data)) {
                 return true;
             }
-            return item < current.Data
+            return item.CompareTo(current.Data) < 0
                 ? RecursiveSearch(current.Left, item)
                 : RecursiveSearch(current.Right, item);
         }
 
-        bool Search(int item) {
+        public bool Search(int item) {
             return RecursiveSearch(_root, item);
         }
         
-        private void PrintTreePreorderRecursive(Node node) {
+        private void PrintTreePreorderRecursive(Node<T> node) {
             if(node == null) return;
 
             Console.Write(node.Data + " ");
@@ -198,7 +198,7 @@ namespace Lab1
             Console.Write("\n");
         }
 
-        private void PrintTreeInorderRecursive(Node node) {
+        private void PrintTreeInorderRecursive(Node<T> node) {
             if(node == null) return;
 
             PrintTreeInorderRecursive(node.Left);
@@ -206,12 +206,12 @@ namespace Lab1
             PrintTreeInorderRecursive(node.Right);
         }
 
-        void PrintTreeInorder() {
+        public void PrintTreeInorder() {
             PrintTreeInorderRecursive(this._root);
             Console.Write("\n");
         }
 
-        private void PrintTreePostorderRecursive(Node node) {
+        private void PrintTreePostorderRecursive(Node<T> node) {
             if(node == null) return;
 
             PrintTreePostorderRecursive(node.Left);
@@ -219,34 +219,34 @@ namespace Lab1
             Console.Write(node.Data + " ");
         }
 
-        void PrintTreePostorder() {
+        public void PrintTreePostorder() {
             PrintTreePostorderRecursive(this._root);
             Console.Write("\n");
         }
         
-        public int GetParent(int value) {
-            Node current = _root;
-            if (current == null || (int) current.Data == value) {
-                return -10000;
+        public T FatherNode(T value) {
+            Node<T> current = _root;
+            if (current == null || current.Data.Equals(value)) {
+                throw new Exception("-10000");
             }
 
             while (true) {
                 if (current.Left == null && current.Right == null)
-                    return -10000;
-                if (current.Left != null && (int) current.Left.Data == value ||
-                    current.Right != null && (int) current.Right.Data == value)
-                    return (int) current.Data;
+                    throw new Exception("-10000");
+                if (current.Left != null && current.Left.Data.Equals(value) ||
+                    current.Right != null && current.Right.Data.Equals(value))
+                    return current.Data;
 
-                if ((int) current.Data > value)
+                if (current.Data.CompareTo(value) > 0)
                     current = current.Left;
                 else current = current.Right;
             }
         }
         
-        public static BalancedBinarySearchTree FromArray(params int[] arr) {
-            BalancedBinarySearchTree tree = new BalancedBinarySearchTree();
+        public static BalancedBinarySearchTree<T> FromArray(params T[] arr) {
+            BalancedBinarySearchTree<T> tree = new BalancedBinarySearchTree<T>();
 
-            foreach(int i in arr) {
+            foreach(T i in arr) {
                 tree.AddItem(i);
             }
 
@@ -255,7 +255,7 @@ namespace Lab1
         
         public static void Main()
         {
-            BalancedBinarySearchTree t = new BalancedBinarySearchTree();
+            BalancedBinarySearchTree<int> t = new BalancedBinarySearchTree<int>();
             Console.WriteLine("isEmpty()");
             Console.WriteLine(t.IsEmpty());
             t.AddItem(8);
@@ -270,7 +270,7 @@ namespace Lab1
             Console.WriteLine(t.IsEmpty());
             
             Console.WriteLine();
-
+            
             Console.WriteLine("Preorder");
             t.PrintTreePreorder();
             Console.WriteLine("Inorder");
@@ -293,12 +293,28 @@ namespace Lab1
 
             Console.WriteLine();
             
-            Console.WriteLine("getParent(8)");
-            Console.WriteLine(t.GetParent(8));
-            Console.WriteLine("getParent(14)");
-            Console.WriteLine(t.GetParent(14));
-            Console.WriteLine("getParent(666)");
-            Console.WriteLine(t.GetParent(666));
+            try
+            {
+                Console.WriteLine("FatherNode(8)");
+                Console.WriteLine(t.FatherNode(8));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("-10000");
+            }
+
+            Console.WriteLine("FatherNode(14)");
+            Console.WriteLine(t.FatherNode(14));
+            
+            try
+            {
+                Console.WriteLine("FatherNode(666)");
+                Console.WriteLine(t.FatherNode(666));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("-10000");
+            }
         }
     }
 }
